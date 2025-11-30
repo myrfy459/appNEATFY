@@ -1,5 +1,7 @@
 package com.example.neatify_app
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -14,39 +16,62 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Sembunyikan Action Bar bawaan
         supportActionBar?.hide()
 
         setupActionListeners()
     }
 
     private fun setupActionListeners() {
-        // 1. Aksi Tombol Back (Kiri Atas)
-        binding.btnBack.setOnClickListener {
-            // Perintah finish() akan menutup halaman Login
-            // dan otomatis kembali ke halaman sebelumnya (Welcome)
-            finish()
-        }
+        binding.btnBack.setOnClickListener { finish() }
 
-        // 2. Aksi Tombol Log In (Orange)
         binding.btnLoginAction.setOnClickListener {
-            // Ambil text dari inputan
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
+            val inputEmail = binding.etEmail.text.toString()
+            val inputPassword = binding.etPassword.text.toString()
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill in email and password", Toast.LENGTH_SHORT).show()
+            if (inputEmail.isEmpty() || inputPassword.isEmpty()) {
+                Toast.makeText(this, "Mohon isi Email dan Password", Toast.LENGTH_SHORT).show()
             } else {
-                // Di sini nanti logika login ke server
-                Toast.makeText(this, "Logging in as $email...", Toast.LENGTH_SHORT).show()
+                // --- PROSES PENGECEKAN DATA ---
+                // 1. Ambil data yang tersimpan di HP
+                val sharedPref = getSharedPreferences("UserDatabase", Context.MODE_PRIVATE)
+                val savedEmail = sharedPref.getString("SAVED_EMAIL", null)
+                val savedPassword = sharedPref.getString("SAVED_PASSWORD", null)
+                val savedRole = sharedPref.getString("SAVED_ROLE", "User")
+                val savedName = sharedPref.getString("SAVED_NAME", "User")
 
-                // Jika sukses, pindah ke HomeActivity (Nanti kita buat)
+                // 2. Cek apakah data ada?
+                if (savedEmail == null || savedPassword == null) {
+                    Toast.makeText(this, "Akun belum terdaftar. Silakan Register dulu.", Toast.LENGTH_LONG).show()
+                }
+                // 3. Cek apakah Email & Password COCOK?
+                else if (inputEmail == savedEmail && inputPassword == savedPassword) {
+
+                    Toast.makeText(this, "Login Berhasil! Halo, $savedName", Toast.LENGTH_SHORT).show()
+
+                    // 4. Arahkan ke Halaman sesuai ROLE
+                    if (savedRole == "Admin") {
+                        val intent = Intent(this, HomeAdminActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    // Tutup semua halaman sebelumnya agar tidak bisa back ke login
+                    finishAffinity()
+
+                } else {
+                    // Jika password salah
+                    Toast.makeText(this, "Email atau Password Salah!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
-        // 3. Aksi Forgot Password
         binding.tvForgot.setOnClickListener {
-            Toast.makeText(this, "Forgot Password clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Fitur lupa password belum tersedia", Toast.LENGTH_SHORT).show()
         }
+
+        // Tambahkan logika untuk link Sign Up jika user belum punya akun
+        // binding.tvSignUpLink... (jika ada textview link ke register)
     }
 }

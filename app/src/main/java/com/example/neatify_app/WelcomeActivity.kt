@@ -1,10 +1,8 @@
-package com.example.neatify_app // <--- PERBAIKAN 1: Sesuaikan dengan nama project aslimu
+package com.example.neatify_app
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-// PERBAIKAN 2: Import binding harus dari package com.example.neatify_app
 import com.example.neatify_app.databinding.ActivityWelcomeBinding
 
 class WelcomeActivity : AppCompatActivity() {
@@ -26,16 +24,16 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun setupActionListeners() {
-        // Aksi ketika tombol Create Account diklik
+        // 1. Aksi ketika tombol Create Account diklik -> Ke RegisterActivity
         binding.btnCreateAccount.setOnClickListener {
-            // Arahkan ke halaman RegisterActivity
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
 
-        // Aksi ketika tombol Log In diklik
+        // 2. Aksi ketika tombol Log In diklik -> Ke LoginActivity (SUDAH DIPERBAIKI)
         binding.btnLogin.setOnClickListener {
-            Toast.makeText(this, "Menuju halaman Log In...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 }

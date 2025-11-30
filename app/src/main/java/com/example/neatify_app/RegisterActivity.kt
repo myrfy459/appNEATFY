@@ -1,5 +1,6 @@
 package com.example.neatify_app
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,49 +24,47 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setupRoleDropdown() {
-        // 1. Siapkan data pilihan role
         val roles = arrayOf("User", "Admin")
-
-        // 2. Buat Adapter untuk Spinner (Dropdown)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roles)
-
-        // 3. Pasang adapter ke Spinner di layout
         binding.spinnerRole.adapter = adapter
     }
 
     private fun setupActionListeners() {
-        // Tombol Back
-        binding.btnBack.setOnClickListener {
-            finish() // Kembali ke halaman sebelumnya
-        }
+        binding.btnBack.setOnClickListener { finish() }
 
-        // Tombol Get Started (Register)
         binding.btnRegisterAction.setOnClickListener {
             val fullName = binding.etFullName.text.toString()
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
-
-            // Mengambil pilihan Role dari Spinner
             val selectedRole = binding.spinnerRole.selectedItem.toString()
 
             if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Mohon isi semua data", Toast.LENGTH_SHORT).show()
             } else {
-                // Di sini nanti logika simpan ke Database (Firebase/API)
-                // Kita tampilkan Toast dulu sebagai simulasi
-                Toast.makeText(this, "Registering as $selectedRole...", Toast.LENGTH_SHORT).show()
+                // --- PROSES MENYIMPAN DATA (SIMULASI DATABASE) ---
+                val sharedPref = getSharedPreferences("UserDatabase", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
 
-                // Jika sukses, biasanya langsung masuk ke halaman Home
-                // val intent = Intent(this, HomeActivity::class.java)
-                // startActivity(intent)
+                // Kita simpan data dengan "Kunci" (Key) agar bisa diambil nanti
+                editor.putString("SAVED_EMAIL", email)
+                editor.putString("SAVED_PASSWORD", password)
+                editor.putString("SAVED_NAME", fullName)
+                editor.putString("SAVED_ROLE", selectedRole)
+                editor.apply() // Simpan perubahan
+
+                Toast.makeText(this, "Registrasi Berhasil! Silakan Login.", Toast.LENGTH_SHORT).show()
+
+                // Setelah berhasil daftar, arahkan ke halaman LOGIN
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish() // Tutup halaman register
             }
         }
 
-        // Link "Already have an account? Log In"
         binding.tvLoginLink.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
-            finish() // Menutup halaman register agar tidak menumpuk
+            finish()
         }
     }
 }
