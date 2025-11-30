@@ -1,5 +1,6 @@
 package com.example.neatify_app
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -30,17 +31,29 @@ class LoginActivity : AppCompatActivity() {
 
         // 2. Aksi Tombol Log In (Orange)
         binding.btnLoginAction.setOnClickListener {
-            // Ambil text dari inputan
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in email and password", Toast.LENGTH_SHORT).show()
             } else {
-                // Di sini nanti logika login ke server
                 Toast.makeText(this, "Logging in as $email...", Toast.LENGTH_SHORT).show()
 
-                // Jika sukses, pindah ke HomeActivity (Nanti kita buat)
+                // ====== KODE LOGIN MENGGUNAKAN SESSION ======
+                val session = SessionManager(this)
+                val savedUser = session.getUser()
+
+                if (savedUser != null && email == savedUser.email) {
+
+                    session.setLoggedIn(true)
+
+                    val intent = Intent(this, ProfileUserActivity::class.java)
+                    startActivity(intent)
+                    finish()
+
+                } else {
+                    Toast.makeText(this, "Email not found / not registered", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

@@ -26,16 +26,17 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun setupActionListeners() {
-        // Aksi ketika tombol Create Account diklik
+        // Tombol Create Account
         binding.btnCreateAccount.setOnClickListener {
-            // Arahkan ke halaman RegisterActivity
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
 
-        // Aksi ketika tombol Log In diklik
+        // Tombol Log In
         binding.btnLogin.setOnClickListener {
-            Toast.makeText(this, "Menuju halaman Log In...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
+
 }
