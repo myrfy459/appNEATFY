@@ -44,20 +44,21 @@ class RegisterActivity : AppCompatActivity() {
             val fullName = binding.etFullName.text.toString()
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
-
-            // Mengambil pilihan Role dari Spinner
             val selectedRole = binding.spinnerRole.selectedItem.toString()
 
             if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             } else {
-                // Di sini nanti logika simpan ke Database (Firebase/API)
-                // Kita tampilkan Toast dulu sebagai simulasi
                 Toast.makeText(this, "Registering as $selectedRole...", Toast.LENGTH_SHORT).show()
 
-                // Jika sukses, biasanya langsung masuk ke halaman Home
-                // val intent = Intent(this, HomeActivity::class.java)
-                // startActivity(intent)
+                // Simpan data user
+                val session = SessionManager(this)
+                session.saveUser(fullName, email)
+
+                // Pindah ke Login atau Home
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         }
 
